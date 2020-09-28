@@ -27,13 +27,44 @@ let end = page*9 //1=9 2=18 3=27
 let start = end-9
 let finalList = []
 
-for(let i = 0; i < list.length; i++){
-   if(i >= start && i <= end){
-      finalList.push(list[i])
-   }
+if(list.length < 9){
+   end = list.length
 }
-addPagination(finalList,page)
-return finalList
+
+for(let i = start; i < end; i++){
+      
+      let item = document.createElement("li") //MAKE STUDENT TEMPLATE
+      let div = document.createElement("div")
+      let img = document.createElement("img")
+      let email = document.createElement("span")
+      let joined = document.createElement("span")
+
+      //insert dynamic data from object array
+      let name = document.createElement("h3")
+      img.src = list[i].picture.medium
+      name.innerHTML = list[i].name.first+" "+list[i].name.last
+      email.innerHTML = list[i].email
+      joined.innerHTML = list[i].registered.date+" "+"Age"+ " "+list[i].registered.age
+
+      //add classes
+      item.className = "student-item cf"
+      div.className = "student-details"
+      img.className = "avatar"
+      img.alt = "profile picture"
+      email.className = "email"
+      joined.className = "date"
+
+      //append to parent elements
+      div.appendChild(img)
+      div.appendChild(name)
+      div.appendChild(email)
+      div.appendChild(joined)
+      item.appendChild(div)
+
+      finalList.push(item)
+      document.getElementById('students').appendChild(item) 
+}
+//addPagination(finalList,page)
 
 
 }
@@ -46,17 +77,11 @@ This function will create and insert/append the elements needed for the paginati
 */
 function addPagination(list,page){
    console.log('inside add pagination')
-   let btnCount = 0
-   let btns = document.getElementById("pageBtns")
-   if (list.length % 9 == 0){
-      btnCount = list.length
-   }else{
-      btnCount = list.length + 1
-   }
-   for( let i = 0; i <btnCount.length; i++){
+   let btnCount = Math.ceil(list.length/9)
+   for( let i = 0; i < btnCount.length; i++){
          let newBtn = document.createElement("button")
          newBtn.id = i
-         newBtn.innerHtml = i
+         newBtn.innerHtml = i.toString()
          newBtn.addEventListener(click,showPage(list,newBtn.id))
 
       if(i == page){
@@ -64,7 +89,7 @@ function addPagination(list,page){
             }else{
                newBtn.className = 'inactive' 
             }
-      
+      let btns = document.getElementById("pageBtns")
       btns.appendChild(newBtn)
 
    }
@@ -78,15 +103,15 @@ This function will search for any students matching the parameters
 
 function searchStudents(){
    console.log('inside search students')
-   let query = document.getElementById('search').value 
-   let results = []
-   for (let i = 0; i < data.length; i++){
-      if (data[i].name.first.includes(query) || data[i].name.last.includes(query)){
-         results.push(data[i])
-      }
+   let query = document.getElementById('search').value
+   const result = data.filter(student => student.name.first.toLowerCase().includes(query));
+   console.log(result)
+   if(result.length > 0 && query !== ''){
+      document.getElementById('students').innerHTML = ''
+   }else{
+      document.getElementById('students').innerHTML = "Sorry, we couldn't find anyone matching that query"
    }
-
-   showPage(results,1)
+   showPage(result,1)
 }
 
 
@@ -96,4 +121,4 @@ function searchStudents(){
 
 showPage(data,1)
 var searchBtn = document.getElementById('searchBtn')
-searchBtn.addEventListener('click', searchStudents())
+searchBtn.addEventListener("click",searchStudents,false)
