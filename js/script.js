@@ -22,13 +22,12 @@ This function will create and insert/append the elements needed to display a "pa
 
 
 function showPage(list,page){
-   console.log('inside show page')
+   
 let end = page*9 //1=9 2=18 3=27
 let start = end-9
 let finalList = []
 
 if(list.length - start < 9){
-   console.log("list-start",list.length - start,"end",end,"list len",list.length)
    end = list.length
 }
 
@@ -64,8 +63,9 @@ for(let i = start; i < end; i++){
 
       document.getElementById('students').appendChild(item) 
 }
-addPagination(page)
-
+if(list.length == data.length){
+      addPagination(page)
+   }
 
 }
 
@@ -76,17 +76,18 @@ Create the `addPagination` function
 This function will create and insert/append the elements needed for the pagination buttons
 */
 function addPagination(page){
-   console.log('inside add pagination')
+
    let btnCount = Math.ceil(data.length%9)
    let btns = document.getElementById("pageBtns")
 
    for( let i = 1; i < btnCount; i++){
+         let newBtnitem = document.createElement("li")
          let newBtn = document.createElement("button")
          newBtn.id = i
          newBtn.innerHTML = i
-         newBtn.className = "pagination"
          newBtn.addEventListener('click',function(){
             document.getElementById('students').innerHTML=''
+   
             btns.innerHTML=''
             showPage(data,newBtn.id)
          },false)
@@ -96,7 +97,8 @@ function addPagination(page){
             }else{
                newBtn.className = 'inactive' 
             }
-               btns.appendChild(newBtn)
+               newBtnitem.appendChild(newBtn)
+               btns.appendChild(newBtnitem)
 
    }
 }
@@ -108,10 +110,10 @@ This function will search for any students matching the parameters
 */
 
 function searchStudents(){
-   console.log('inside search students')
+
    let query = document.getElementById('search').value
    const result = data.filter(student => student.name.first.toLowerCase().includes(query));
-   console.log(result)
+  
    if(result.length > 0 && query !== ''){
       document.getElementById('students').innerHTML = ''
    }else{
