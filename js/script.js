@@ -27,7 +27,8 @@ let end = page*9 //1=9 2=18 3=27
 let start = end-9
 let finalList = []
 
-if(list.length < 9){
+if(list.length - start < 9){
+   console.log("list-start",list.length - start,"end",end,"list len",list.length)
    end = list.length
 }
 
@@ -61,10 +62,9 @@ for(let i = start; i < end; i++){
       div.appendChild(joined)
       item.appendChild(div)
 
-      finalList.push(item)
       document.getElementById('students').appendChild(item) 
 }
-//addPagination(finalList,page)
+addPagination(page)
 
 
 }
@@ -75,22 +75,28 @@ for(let i = start; i < end; i++){
 Create the `addPagination` function
 This function will create and insert/append the elements needed for the pagination buttons
 */
-function addPagination(list,page){
+function addPagination(page){
    console.log('inside add pagination')
-   let btnCount = Math.ceil(list.length/9)
-   for( let i = 0; i < btnCount.length; i++){
+   let btnCount = Math.ceil(data.length%9)
+   let btns = document.getElementById("pageBtns")
+
+   for( let i = 1; i < btnCount; i++){
          let newBtn = document.createElement("button")
          newBtn.id = i
-         newBtn.innerHtml = i.toString()
-         newBtn.addEventListener(click,showPage(list,newBtn.id))
+         newBtn.innerHTML = i
+         newBtn.className = "pagination"
+         newBtn.addEventListener('click',function(){
+            document.getElementById('students').innerHTML=''
+            btns.innerHTML=''
+            showPage(data,newBtn.id)
+         },false)
 
       if(i == page){
          newBtn.className = 'active'
             }else{
                newBtn.className = 'inactive' 
             }
-      let btns = document.getElementById("pageBtns")
-      btns.appendChild(newBtn)
+               btns.appendChild(newBtn)
 
    }
 }
